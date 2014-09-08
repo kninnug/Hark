@@ -1,9 +1,5 @@
 #include "harmonics.h"
 
-#define UMIN_HARMONIC 48
-#define MIN_HARMONIC -48
-#define MAX_HARMONIC  83
-
 static const char * notes[] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
 static const char * lines[] = {
@@ -57,10 +53,11 @@ const char * harmonicToLine(int harmonic){
 }
 
 double harmonicToFreq(int harmonic){
-	if(harmonic < MIN_HARMONIC || harmonic > MAX_HARMONIC) return 0.0;
+	if(harmonic < MIN_HARMONIC || harmonic > MAX_HARMONIC){
+		return 0.0;
+	}
 	
-	if(harmonic < 0) harmonic = UMIN_HARMONIC + harmonic;
-	else harmonic += UMIN_HARMONIC;
+	harmonic += UMIN_HARMONIC;
 	
 	return harmonics[harmonic];
 }
@@ -68,19 +65,29 @@ double harmonicToFreq(int harmonic){
 /**
  * x = 12*log2(f/440)
  */
-int freqToHarmonic(double freq){
+int freqToHarmonic(double freq, double * diff){
 	double harm = (double)12*log2(freq/(double)440) + (double)9;
 	int x = round(harm);
-	double diff0 = fabs(harmonicToFreq(x-1) - freq),
-		diff1 = fabs(harmonicToFreq(x) - freq),
-		diff2 = fabs(harmonicToFreq(x+1) - freq);
-	
+	double freq0 = harmonicToFreq(x-1),
+		freq1 = harmonicToFreq(x),
+		freq2 = harmonicToFreq(x+1),
+		diff0 = fabs(freq0 - freq),
+		diff1 = fabs(freq1 - freq),
+		diff2 = fabs(freq2 - freq),
+		nodiff = 0.0;
+		
+	if(diff == NULL) diff = &nodiff;
+	//*diff = harm;
 	//printf("f = %f, x = %3i, d@[x-1] = %f, d@[x] = %f, d@[x+1] = %f\n", freq, x, diff0, diff1, diff2);
 	
+	*diff = freq0;
 	if(diff0 < diff1 && diff0 < diff2) return x - 1;
+	*diff = freq1;
 	if(diff1 < diff0 && diff1 < diff2) return x;
+	*diff = freq2;
 	if(diff2 < diff0 && diff2 < diff1) return x + 1;
 	
+	*diff = freq1;
 	return x;
 }
 

@@ -6,8 +6,19 @@
 
 #include "fftw3.h"
 
+struct heap{
+	size_t length;
+	size_t front;
+	double * items;
+	int * addons;
+};
+
 void * fmalloc(size_t n);
 
-double highFreq(fftw_complex * fftOut, int fftSize, int samplerate, double * intens);
+size_t highFreq(fftw_complex * fftOut, int fftSize, double * intens);
+
+int * threshFreq(fftw_complex * fftOut, int fftSize, int threshold, int * in, size_t len, struct heap * hin);
+
+struct heap * heap_new(size_t length);
 
 #endif

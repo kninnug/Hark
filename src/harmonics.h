@@ -5,9 +5,13 @@
 #include <string.h>
 #include <math.h>
 
+#define UMIN_HARMONIC 48
+#define MIN_HARMONIC -48
+#define MAX_HARMONIC  83
+
 void genHarmonics();
 
-int freqToHarmonic(double freq);
+int freqToHarmonic(double freq, double * diff);
 
 double harmonicToFreq(int harmonic);
 
