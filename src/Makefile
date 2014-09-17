@@ -20,6 +20,9 @@ fft-multithread: fft-multithread.c harmonics.o util.o
 
 fft-sdl: fft-sdl.c harmonics.o util.o
 	gcc $(STD_OPTS) -o fft-sdl fft-sdl.c $(ALL_LIBS) -pthread -lm -mconsole `sdl2-config --libs`
+
+pianer: pianer.c
+	gcc $(STD_OPTS) -o pianer pianer.c -lm -lportaudio -lwinmm
 	
 clock_gettime.o: clock_gettime.h clock_gettime.c
 	gcc $(STD_OPTS) -o clock_gettime.o -c clock_gettime.c
